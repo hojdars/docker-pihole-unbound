@@ -1,4 +1,14 @@
-# Pi-Hole + Unbound - 1 Container
+# Pi-Hole + Unbound
+
+This project is based on the [original repository by Chris Crowe](https://github.com/chriscrowe/docker-pihole-unbound).
+The adjusments I made follow:
+
+1. using `host` networking mode in docker, this is **crucial** if you are using the Pi-hole as a **DHCP server**, see the [official Pi-hole documentation](https://docs.pi-hole.net/docker/DHCP/) for further details
+2. `Docker Hub` is no longer used, the docker image is built locally from the `Dockerfile`
+3. `pihole/pihole:latest` is used as the original image, making updating easy
+4. added `update-pihole.sh` script - just run it and both `pihole` and `unbound` should update (if there is an update to begin with)
+5. Bugfix 1: added `cap_add: NET_ADMIN` to the `docker-compose`, required if you want to use the Pi-hole as a DHCP server
+6. Bugfix 2: using the CLI `apt-get` instead of `apt` which prevents a warning (and potentially something worse later)
 
 ## Description
 
@@ -9,7 +19,6 @@ The base image for the container is the [official Pi-Hole container](https://hub
 ## Usage
 
 First create a `.env` file to substitute variables for your deployment.
-
 
 ### Required environment variables
 
@@ -40,20 +49,8 @@ HOSTNAME=pihole
 DOMAIN_NAME=pihole.local
 ```
 
-### Using Portainer stacks?
-
-Portainer stacks are a little weird and don't want you to declare your named volumes, so remove this block from the top of the `docker-compose.yaml` file before copy/pasting into Portainer's stack editor:
-
-```yaml
-volumes:
-  etc_pihole-unbound:
-  etc_pihole_dnsmasq-unbound:
-```
-
-### Running the stack
+### Running
 
 ```bash
 docker-compose up -d
 ```
-
-> If using Portainer, just paste the `docker-compose.yaml` contents into the stack config and add your *environment variables* directly in the UI.
