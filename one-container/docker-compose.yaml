@@ -6,11 +6,10 @@ volumes:
 
 services:
   pihole:
-    container_name: pihole
+    container_name: pihole-unbound
     cap_add:
         - NET_ADMIN
-    build:
-      dockerfile: pihole-unbound/Dockerfile
+    build: ./pihole-unbound
     hostname: ${HOSTNAME}
     domainname: ${DOMAIN_NAME}
     dns:
